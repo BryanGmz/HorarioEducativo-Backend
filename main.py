@@ -1,8 +1,8 @@
 from typing import Union
-from db.database import Base, engine, get_db
+from config.database import Base, engine, get_db
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
-from db.models import Course
+from models.models import Course
 import uvicorn
 
 def create_tables():
