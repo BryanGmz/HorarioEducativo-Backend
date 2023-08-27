@@ -2,7 +2,7 @@ from typing import Union
 from config.database import Base, engine, get_db
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
-from models.models import Course
+from models.models import *
 import uvicorn
 
 def create_tables():
@@ -17,7 +17,7 @@ if __name__ == "__main__":
 
 @app.get("/")
 def read_root(db:Session = Depends(get_db)):
-    data = db.query(Course).all()
+    data = db.query(Carrer).all()
     print(data)
     return {"Hello": "World"}
 
