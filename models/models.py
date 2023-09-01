@@ -12,7 +12,7 @@ class Carrer(Base):
 class Course(Base): 
     __tablename__ = "course"
     id_course = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String, nullable=False)
+    name = Column(String, nullable=False, unique=True)
     semester = Column(Integer, nullable=False)
     carrer_id = Column(Integer, ForeignKey("carrer.id_carrer"))
     carrer = relationship("Carrer", back_populates="courses") 
@@ -26,12 +26,13 @@ class Assignment(Base):
     carrer_id = Column(Integer, ForeignKey("carrer.id_carrer"), primary_key=True)
     year = Column(Integer, primary_key=True)
     semester = Column(Integer, primary_key=True)
+    section = Column(String, primary_key=True)
     assigned = Column(Integer, nullable=False)
     course = relationship("Course", back_populates="assignments")
     carrer = relationship("Carrer", back_populates="assignments")
 
     __table_args__ = (
-        PrimaryKeyConstraint("course_id", "carrer_id", "year", "semester"),
+        PrimaryKeyConstraint("course_id", "carrer_id", "year", "semester", "section"),
     )
 
 class Area(Base):
@@ -84,14 +85,24 @@ class ScheduleAssignment(Base):
     course_id = Column(Integer, ForeignKey("course.id_course"), primary_key=True)
     classroom_id = Column(Integer, ForeignKey("classroom.id_classroom"), primary_key=True)
     teacher_dpi = Column(BigInteger, ForeignKey("teacher.dpi_teacher"), primary_key=True)
-    year = Column(Integer, nullable=False)
-    semester = Column(Integer, nullable=False)
+    criterion_id = Column(Integer, ForeignKey("criterion.id_criterion"))
+    section = Column(String, primary_key=True)
+    year = Column(Integer, nullable=False, unique=True)
+    semester = Column(Integer, nullable=False, unique=True)
     star_time = Column(Time, nullable=False)
     end_time = Column(Time, nullable=False)
+    warnings = Column(String)
     course = relationship("Course", back_populates="schedule_assignments")
     classroom = relationship("Classroom", back_populates="schedule_assignments")
     teacher = relationship("Teacher", back_populates="schedule_assignments")
+    criteria = relationship("Criterion", back_populates="schedule_assignments")
 
     __table_args__ = (
-        PrimaryKeyConstraint("course_id", "classroom_id", "teacher_dpi"),
+        PrimaryKeyConstraint("course_id", "classroom_id", "teacher_dpi", "section"),
     )
+
+class Criterion(Base):
+    __tablename__ = "criterion"
+    id_criterion = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String, nullable=False)
+    schedule_assignments = relationship("ScheduleAssignment", back_populates="criteria") 

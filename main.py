@@ -3,6 +3,8 @@ from config.database import Base, engine, get_db
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
 from models.models import *
+from handlers.ScheduleManager import ScheduleManager
+from datetime import time
 import uvicorn
 
 def create_tables():
@@ -10,6 +12,7 @@ def create_tables():
 
 create_tables()
 
+schedule_manager = ScheduleManager(time(12, 0, 0,), time(21, 10, 0,), time(0, 50, 0,))
 app = FastAPI()
 
 if __name__ == "__main__":
@@ -18,7 +21,9 @@ if __name__ == "__main__":
 @app.get("/")
 def read_root(db:Session = Depends(get_db)):
     data = db.query(Carrer).all()
-    print(data)
+    
+    print(schedule_manager.generate_empty_schedule(db))
+    print(schedule_manager.get_classroom_by_capacity_desc(db, 0))
     return {"Hello": "World"}
 
 @app.get("/items/{item_id}")
