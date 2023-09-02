@@ -20,10 +20,12 @@ if __name__ == "__main__":
 
 @app.get("/")
 def read_root(db:Session = Depends(get_db)):
-    data = db.query(Carrer).all()
+    data = db.query(Specialty).all()
     
     print(schedule_manager.generate_empty_schedule(db))
     print(schedule_manager.get_classroom_by_capacity_desc(db, 0))
+    print(schedule_manager.get_periods())
+    print(data[0].area.name)
     return {"Hello": "World"}
 
 @app.get("/items/{item_id}")

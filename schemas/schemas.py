@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from datetime import time
+from typing import List
 
 class CarrerData(BaseModel):
     id: int
@@ -10,6 +11,7 @@ class CourseData(BaseModel):
     name: str
     semester: int
     carrer: CarrerData
+    requeriments: List[]
 
 class AssignmentData(BaseModel):
     course: CourseData
@@ -17,6 +19,7 @@ class AssignmentData(BaseModel):
     year: int
     section: str
     assigned: int
+    is_assigned: bool = False
 
 class AreaData(BaseModel):
     id: int
@@ -31,7 +34,7 @@ class TeacherData(BaseModel):
     name: str
     start_conntracting_hour: time 
     end_conntracting_hour: time
-    specialties: list[SpecialtyData] = []
+    specialties: List[SpecialtyData] = []
 
 class ClassroomData(BaseModel):
     id: int
@@ -62,4 +65,11 @@ class Space(BaseModel):
     classroom: ClassroomData
     start_time: time
     end_time: time
+    i_index: int
+    j_index: int
     schedule_assignment: ScheduleAssignmentData = None
+
+class Period (BaseModel):
+    start_time: time
+    end_time: time
+    index: int

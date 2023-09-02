@@ -1,6 +1,6 @@
 from datetime import time, timedelta
 from math import ceil
-from schemas.schemas import ScheduleAssignmentData, Space, ClassroomData
+from schemas.schemas import ScheduleAssignmentData, Space, ClassroomData, Period
 from repositories.classroom import *
 from models.models import Classroom
 
@@ -14,6 +14,7 @@ class ScheduleManager:
         self.end_time_td = timedelta(hours=end_time.hour, minutes=end_time.minute, seconds=end_time.second)
         self.time_frame_td = timedelta(hours=time_frame.hour, minutes=time_frame.minute, seconds=time_frame.second)
         self.schedule = None
+        self.periods = []
         self.len_classrooms = 0
         self.len_periods = 0
         
@@ -42,19 +43,19 @@ class ScheduleManager:
                 minutes=start_time_assigned.minute, 
                 seconds=start_time_assigned.second) + self.time_frame_td)
 
-    def get_periods(self):
+    def get_len_periods(self):
         return ceil((self.end_time_td - self.start_time_td)/self.time_frame_td)
     
     def generate_empty_schedule(self, db:Session):
         classrooms = get_all_clasroom(db)
-        self.len_periods = self.get_periods()
+        self.len_periods = self.get_len_periods()
         self.len_periods = self.len_periods if self.len_periods > 0 else self.len_periods - 1
         self.len_classrooms = len(classrooms)
         self.schedule = [[None for _ in range(len(classrooms))] for _ in range(self.len_periods)]
         for i in range(self.len_periods):
+            start_hour:time = self.generate_new_hour(i + 1)
             for j in range(len(classrooms)):
-                start_hour:time = self.generate_new_hour(i + 1)
-                self.schedule[i][j] = Space (
+                self.schedule[i][j] = Space(
                     classroom = ClassroomData(
                         id = classrooms[j].id_classroom,
                         capacity = classrooms[j].capacity,
@@ -62,10 +63,19 @@ class ScheduleManager:
                     ),
                     start_time = start_hour,
                     end_time = self.generate_end_time(start_hour),
+                    i_index = i,
+                    j_index = j,
                 )
-
+            self.periods.append(Period(
+                start_time = start_hour,
+                end_time = self.generate_end_time(start_hour),
+                index = i 
+            ))
         return self.schedule
     
+    def get_periods(self):
+        return self.periods
+
     def get_by_period(self, period:int):
         return self.schedule[period]
 
