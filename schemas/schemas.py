@@ -6,12 +6,16 @@ class CarrerData(BaseModel):
     id: int
     name: str
 
+class RequerimentData(BaseModel):
+    area_id: int
+    course_id: int
+
 class CourseData(BaseModel):
     id: int
     name: str
     semester: int
     carrer: CarrerData
-    requeriments: List[]
+    requeriments: List[RequerimentData] = []
 
 class AssignmentData(BaseModel):
     course: CourseData
@@ -19,7 +23,8 @@ class AssignmentData(BaseModel):
     year: int
     section: str
     assigned: int
-    is_assigned: bool = False
+    is_assigned: bool = False,
+    warning: str = None
 
 class AreaData(BaseModel):
     id: int
@@ -41,10 +46,6 @@ class ClassroomData(BaseModel):
     name: str
     capacity: int
 
-class RequerimentData(BaseModel):
-    area: AreaData
-    course_id: int
-
 class CriterionData(BaseModel):
     id: int
     name: str
@@ -59,7 +60,7 @@ class ScheduleAssignmentData(BaseModel):
     semester: int
     star_time: time
     end_time: time
-    warnings: list[str] = []
+    warnings: str = None
 
 class Space(BaseModel):
     classroom: ClassroomData

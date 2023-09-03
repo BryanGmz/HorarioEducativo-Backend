@@ -1,6 +1,6 @@
 from datetime import time, timedelta
 from math import ceil
-from schemas.schemas import ScheduleAssignmentData, Space, ClassroomData, Period
+from schemas.schemas import Space, ClassroomData, Period
 from repositories.classroom import *
 from models.models import Classroom
 
@@ -71,7 +71,6 @@ class ScheduleManager:
                 end_time = self.generate_end_time(start_hour),
                 index = i 
             ))
-        return self.schedule
     
     def get_periods(self):
         return self.periods
@@ -80,11 +79,12 @@ class ScheduleManager:
         return self.schedule[period]
 
     def sort_classrom_space(self, spaces):
-        return sorted(spaces, key=lambda space: space.classroom.capacity, reverse=True)
+        return sorted(spaces, key = lambda space : space.classroom.capacity, reverse=True)
 
     def get_classroom_by_capacity_desc(self, db:Session, period:int):
         sorted_classroom = self.sort_classrom_space(self.get_by_period(period))
+        classrooms = []
         for space in sorted_classroom:
             if (space.schedule_assignment == None):
-                return space
-        return None
+                classrooms.append(space)
+        return classrooms

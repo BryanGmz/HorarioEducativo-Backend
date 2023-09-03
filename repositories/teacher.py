@@ -12,6 +12,6 @@ def get_all_teacher(db:Session):
 
 def get_teacher_by_contracting_hour(db: Session, start_time: time, end_time: time):
     return db.query(Teacher).filter(
-        (Teacher.start_contracting_hour >= start_time) |
-        (Teacher.end_contracting_hour <= end_time)
+        (Teacher.start_conntracting_hour >= start_time) |
+        (Teacher.end_conntracting_hour <= end_time)
     ).all()
