@@ -1,7 +1,8 @@
 from sqlalchemy.orm import Session
 from repositories import assignment, course
-from schemas.schemas import AssignmentData, CriterionData, Space, CourseData, CarrerData, TeacherData, ScheduleAssignmentData, RequerimentData
+from objects.objects import AssignmentData, CriterionData, Space, CourseData, CarrerData, TeacherData, ScheduleAssignmentData, RequerimentData
 from models.models import Teacher, Requirement
+
 class AssignmentManager:
     
     def __init__(self, db:Session):
@@ -27,8 +28,7 @@ class AssignmentManager:
                     ),
                     assigned = assigment_db.assigned,
                     section = assigment_db.section,
-                    year = assigment_db.year,
-                    is_assigned=False))
+                    year = assigment_db.year))
     
     def add_requeriments(self, requeriments_db:Requirement):
         requeriments = []
@@ -46,7 +46,7 @@ class AssignmentManager:
     def get_unassigned(self):
         return list(filter(lambda assigment: not assigment.is_assigned, self.assignments))
     
-    def check_contains_qualifications(self, teacher:Teacher, course:CourseData):
+    def verify_contains_qualifications(self, teacher:Teacher, course:CourseData):
         for specialty in teacher.specialties:
             for requeriment in course.requeriments:
                 if requeriment.area_id == specialty.area_id:
@@ -55,10 +55,9 @@ class AssignmentManager:
 
     def filter_by_qualifications(self, teacher:Teacher):
         assignments = self.get_unassigned()
-        print(len(assignments))
         filter_list = []
         for _assigment in assignments:
-            if(self.check_contains_qualifications(teacher, _assigment.course)):
+            if(self.verify_contains_qualifications(teacher, _assigment.course)):
                 filter_list.append(_assigment)
         return filter_list
     
@@ -68,14 +67,14 @@ class AssignmentManager:
             year = assignment_data.year,
             course = assignment_data.course,
             semester = assignment_data.course.semester,
-            star_time = space.start_time,
+            start_time = space.start_time,
             end_time = space.end_time,
             section = assignment_data.section,
             teacher = TeacherData (
                 dpi = teacher.dpi_teacher,
                 name = teacher.name,
                 start_conntracting_hour = teacher.start_conntracting_hour,
-                end_conntracting_hour = teacher.end_conntracting_hour,
+                end_conntraction_hour = teacher.end_conntracting_hour
             ),
             criterion = CriterionData(
                 id = id,

@@ -3,7 +3,7 @@ from handlers.ScheduleManager import ScheduleManager
 from handlers.AssignmentManager import AssignmentManager
 from generators.GenerateByHiringSchedule import GenerateByHiringSchedule
 from repositories import teacher
-from schemas.schemas import Space
+from objects.objects import Space
 
 class GenerateByQualifications:
     
@@ -29,7 +29,7 @@ class GenerateByQualifications:
                 for course in courses:
                     if(len(periods) > 0):
                         for period in periods:
-                            space:Space = self.generate_by_hiring_schedule.check_space_by_capaciy(period.index, course.assigned)
+                            space:Space = self.generate_by_hiring_schedule.verify_space_by_capaciy(period.index, course.assigned)
                             if (space != None):
                                 course.is_assigned = True
                                 space.schedule_assignment = self.assignment_manager.build_assignment(space, course, teacher_db, 'Por Cualificaciones', 2)

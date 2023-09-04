@@ -1,6 +1,6 @@
 from datetime import time, timedelta
 from math import ceil
-from schemas.schemas import Space, ClassroomData, Period
+from objects.objects import Space, ClassroomData, Period
 from repositories.classroom import *
 from models.models import Classroom
 
@@ -19,7 +19,6 @@ class ScheduleManager:
         self.len_periods = 0
         
     def build_classroom(classroom:Classroom):
-        print(classroom.id_classroom)
         return ClassroomData(
             id = classroom.id_classroom,
             capacity = classroom.capacity,
@@ -79,7 +78,15 @@ class ScheduleManager:
         return self.schedule[period]
 
     def sort_classrom_space(self, spaces):
-        return sorted(spaces, key = lambda space : space.classroom.capacity, reverse=True)
+        return sorted(spaces, key = lambda space : space.classroom.capacity, reverse = True)
+
+    def get_classroom_assinged(self, period):
+        sorted_classroom = self.sort_classrom_space(self.get_by_period(period))
+        classrooms = []
+        for space in sorted_classroom:
+            if (space.schedule_assignment != None):
+                classrooms.append(space)
+        return classrooms
 
     def get_classroom_by_capacity_desc(self, db:Session, period:int):
         sorted_classroom = self.sort_classrom_space(self.get_by_period(period))
