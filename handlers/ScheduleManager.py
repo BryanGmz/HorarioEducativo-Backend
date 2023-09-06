@@ -52,7 +52,7 @@ class ScheduleManager:
         self.len_classrooms = len(classrooms)
         self.schedule = [[None for _ in range(len(classrooms))] for _ in range(self.len_periods)]
         for i in range(self.len_periods):
-            start_hour:time = self.generate_new_hour(i + 1)
+            start_hour:time = self.generate_new_hour(i)
             for j in range(len(classrooms)):
                 self.schedule[i][j] = Space(
                     classroom = ClassroomData(
@@ -76,6 +76,15 @@ class ScheduleManager:
 
     def get_by_period(self, period:int):
         return self.schedule[period]
+    
+    def __sort_classroom__(self, spaces):
+        if (self.schedule != None):
+            return sorted(spaces, key = lambda space : space.classroom.id)
+        return []
+
+    def sort_classrooms(self):
+        for period in self.periods:
+            self.schedule[period.index] = self.__sort_classroom__(self.get_by_period(period.index))
 
     def sort_classrom_space(self, spaces):
         return sorted(spaces, key = lambda space : space.classroom.capacity, reverse = True)

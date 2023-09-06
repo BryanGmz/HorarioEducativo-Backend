@@ -53,6 +53,13 @@ class AssignmentManager:
                     return True
         return False
 
+    def sort_courses_desc(courses):
+        return sorted(courses, key = lambda course : course.assigned, reverse = True)
+        
+    # Aca se agregara la validación de los cursos que el profesor debe de dar por obligación
+    def get_best_option(teacher:Teacher, courses):
+        pass
+    
     def filter_by_qualifications(self, teacher:Teacher):
         assignments = self.get_unassigned()
         filter_list = []
@@ -78,4 +85,5 @@ class AssignmentManager:
             ),
             criterion = CriterionData(
                 id = id,
-                name =priority,)) 
+                name =priority,),
+            assigned = assignment_data.assigned,)  

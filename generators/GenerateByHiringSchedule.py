@@ -15,7 +15,7 @@ class GenerateByHiringSchedule:
         spaces = self.schedule_manager.get_classroom_by_capacity_desc(self.db, period)
         if (len(spaces) > 0):
             for space in spaces:
-                if (space.classroom.capacity <= necessary_capacity):
+                if (space.classroom.capacity >= necessary_capacity):
                     return space  
         return None
 

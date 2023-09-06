@@ -69,7 +69,7 @@ class CriterionData:
 
 class ScheduleAssignmentData:
         
-    def __init__(self, course:CourseData, classroom:ClassroomData, teacher:TeacherData, criterion:CriterionData, section:str, year:str, semester:int, start_time:time, end_time:time):
+    def __init__(self, course:CourseData, classroom:ClassroomData, teacher:TeacherData, criterion:CriterionData, section:str, year:str, semester:int, start_time:time, end_time:time, assigned:int):
         self.course:CourseData = course
         self.classroom:ClassroomData = classroom
         self.teacher:TeacherData = teacher
@@ -80,6 +80,7 @@ class ScheduleAssignmentData:
         self.star_time = start_time
         self.end_time = end_time
         self.warnings = None
+        self.assigned = assigned
 
 class Space:
         

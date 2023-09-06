@@ -38,17 +38,18 @@ class GenerateByAssignment:
         for unassigned in unassigneds:
             periods = self.schedule_manager.get_periods()
             for period in periods:
-                classroom = self.generate_by_hiring_schedule.verify_space_by_capaciy(period.index, unassigned.assigned)
-                if (classroom != None):
-                    teachers_avaible = self.verify_teacher_avaible_schedule(period)
-                    if (len(teachers_avaible) > 0):
-                        qualificated_teacher = self.get_qualificated_teacher(teachers_avaible, unassigned)  
-                        if(qualificated_teacher != None):
-                            unassigned.is_assigned = True
-                            classroom.schedule_assignment = self.assignment_manager.build_assignment(classroom, unassigned, qualificated_teacher, 'Por Asignación de Cursos y Espacios', 3)
-                        else:
-                            unassigned.warning = "No asignado debido a que no hay profesores con las cualificaciones requeridas por el curso."
+                if (not unassigned.is_assigned):
+                    classroom = self.generate_by_hiring_schedule.verify_space_by_capaciy(period.index, unassigned.assigned)
+                    if (classroom != None):
+                        teachers_avaible = self.verify_teacher_avaible_schedule(period)
+                        if (len(teachers_avaible) > 0):
+                            qualificated_teacher = self.get_qualificated_teacher(teachers_avaible, unassigned)  
+                            if(qualificated_teacher != None):
+                                unassigned.is_assigned = True
+                                classroom.schedule_assignment = self.assignment_manager.build_assignment(classroom, unassigned, qualificated_teacher, 'Por Asignación de Cursos y Espacios', 3)
+                            else:
+                                unassigned.warning = "No asignado debido a que no hay profesores con las cualificaciones requeridas por el curso."
+                        else: 
+                            unassigned.warning = "No asignado debido a que no hay profesores disponibles por el horario de contratación."
                     else: 
-                        unassigned.warning = "No asignado debido a que no hay profesores disponibles por el horario de contratación."
-                else: 
-                    unassigned.warning = "No asignado debido a que no se encontro salón con la capacidad necesaria."
+                        unassigned.warning = "No asignado debido a que no se encontro salón con la capacidad necesaria."

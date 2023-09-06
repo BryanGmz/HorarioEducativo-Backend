@@ -9,6 +9,10 @@ router = APIRouter (
     tags = ["Schedule"]
 )
 
+@router.get('/',status_code=status.HTTP_200_OK)
+def hola(db:Session = Depends(get_db)):
+    return {"Hola": "Hola"}
+
 @router.post('/',status_code=status.HTTP_200_OK)
 def generate_schedule(generate_schedule:GenerateSchedule,  db:Session = Depends(get_db)):
     return schedule_service.get_schedule(db, generate_schedule)

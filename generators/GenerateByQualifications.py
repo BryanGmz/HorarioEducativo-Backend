@@ -26,17 +26,21 @@ class GenerateByQualifications:
             courses = self.assignment_manager.filter_by_qualifications(teacher_db)
             if (len(courses) > 0):
                 periods = self.get_periods_by_contracting_hour(teacher_db.start_conntracting_hour, teacher_db.end_conntracting_hour)
-                for course in courses:
-                    if(len(periods) > 0):
-                        for period in periods:
-                            space:Space = self.generate_by_hiring_schedule.verify_space_by_capaciy(period.index, course.assigned)
-                            if (space != None):
-                                course.is_assigned = True
-                                space.schedule_assignment = self.assignment_manager.build_assignment(space, course, teacher_db, 'Por Cualificaciones', 2)
-                            else:
-                                course.warning = "No asignado debido a que no se encontro salón con la capacidad necesaria."
-                    else:
-                        course.warning = "No asignado debido a que no hay profesores disponibles por el horario de contratación."
+                if(len(periods) > 0):
+                    for period in periods:
+                        for course in courses:
+                            if (not course.is_assigned):
+                                space:Space = self.generate_by_hiring_schedule.verify_space_by_capaciy(period.index, course.assigned)
+                                if (space != None):
+                                    course.is_assigned = True
+                                    space.schedule_assignment = self.assignment_manager.build_assignment(space, course, teacher_db, 'Por Cualificaciones', 2)
+                                    break
+                                else:
+                                    course.warning = "No asignado debido a que no se encontro salón con la capacidad necesaria."
+                else:
+                    course.warning = "No asignado debido a que no hay profesores disponibles por el horario de contratación."
+               
+                    
         self.assignment_manager.add_warnings_unassigned("No asignado debido a que no hay profesores con las cualificaciones requeridas por el curso.")
                     
                         
