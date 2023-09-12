@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
-from repositories import assignment, course
-from objects.objects import AssignmentData, CriterionData, Space, CourseData, CarrerData, TeacherData, ScheduleAssignmentData, RequerimentData
-from models.models import Teacher, Requirement
+from repositories import assignment, course, qualification
+from objects.objects import AssignmentData, CriterionData, Space, CourseData, CarrerData, TeacherData, ScheduleAssignmentData
+from models.models import Teacher, Qualification
 
 class AssignmentManager:
     
@@ -10,9 +10,9 @@ class AssignmentManager:
         self.assignments = []
 
     def get_assigments_db(self):
-        assignments_db = assignment.get_all_assignment(self.db)
+        assignments_db = assignment.get_all_assignments(self.db)
         for assigment_db in assignments_db:
-            requeriments_db = course.get_course_by_id(self.db, assigment_db.course_id).requeriments
+            qualifications_db = qualification.get_qualification_by_course(self.db, assigment_db.course_id)
             carrer_data = CarrerData (
                 id = assigment_db.carrer.id_carrer,
                 name = assigment_db.carrer.name)
@@ -24,20 +24,11 @@ class AssignmentManager:
                         name = assigment_db.course.name,
                         semester = assigment_db.course.semester,
                         carrer = carrer_data,
-                        requeriments = self.add_requeriments(requeriments_db),
-                    ),
+                        qualifications = qualifications_db
+                        ),
                     assigned = assigment_db.assigned,
                     section = assigment_db.section,
                     year = assigment_db.year))
-    
-    def add_requeriments(self, requeriments_db:Requirement):
-        requeriments = []
-        for requeriment_db in requeriments_db:
-            requeriments.append(RequerimentData (
-                area_id = requeriment_db.area_id,
-                course_id = requeriment_db.course_id,
-            ))
-        return requeriments
 
     def add_warnings_unassigned(self, warning):
         for unassigned in self.get_unassigned():
@@ -46,26 +37,14 @@ class AssignmentManager:
     def get_unassigned(self):
         return list(filter(lambda assigment: not assigment.is_assigned, self.assignments))
     
-    def verify_contains_qualifications(self, teacher:Teacher, course:CourseData):
-        for specialty in teacher.specialties:
-            for requeriment in course.requeriments:
-                if requeriment.area_id == specialty.area_id:
-                    return True
-        return False
-
-    def sort_courses_desc(courses):
-        return sorted(courses, key = lambda course : course.assigned, reverse = True)
-        
-    # Aca se agregara la validación de los cursos que el profesor debe de dar por obligación
-    def get_best_option(teacher:Teacher, courses):
-        pass
-    
     def filter_by_qualifications(self, teacher:Teacher):
         assignments = self.get_unassigned()
         filter_list = []
-        for _assigment in assignments:
-            if(self.verify_contains_qualifications(teacher, _assigment.course)):
-                filter_list.append(_assigment)
+        courses = qualification.get_qualification_by_teacher_and_is_owner(self.db, teacher.dpi_teacher)
+        for course in courses:
+            for _assigment in assignments:
+                if (course.course_id == _assigment.course.id): 
+                    filter_list.append(_assigment)
         return filter_list
     
     def build_assignment(self, space:Space, assignment_data:AssignmentData, teacher:Teacher, priority, id:int):

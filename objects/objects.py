@@ -7,20 +7,14 @@ class CarrerData:
         self.id = id
         self.name = name
 
-class RequerimentData:
-
-    def __init__(self, area_id = int, course_id = int):
-        self.area_id = area_id
-        self.course_id = course_id
-
 class CourseData:
         
-    def __init__(self, id:int, name:str, semester:int, carrer:CarrerData, requeriments):
+    def __init__(self, id:int, name:str, semester:int, carrer:CarrerData, qualifications):
         self.id = id
         self.name = name
         self.semester = semester
         self.carrer:CarrerData = carrer
-        self.requeriments = requeriments
+        self.qualifications = qualifications
 
 class AssignmentData:
         
@@ -33,18 +27,6 @@ class AssignmentData:
         self.is_assigned = False
         self.warning = None
 
-class AreaData:
-    
-    def __init__(self, id:int, name:str):
-        self.id = id
-        self.name = name
-
-class SpecialtyData:
-    
-    def __init__(self, area:AreaData, teacher_dpi:int):
-        self.area:AreaData = area
-        self.teacher_dpi = teacher_dpi
-
 class TeacherData:
     
     def __init__(self, dpi:int, name:str, start_conntracting_hour:time, end_conntraction_hour:time):
@@ -52,7 +34,7 @@ class TeacherData:
         self.name = name
         self.start_conntracting_hour = start_conntracting_hour
         self.end_conntraction_hour = end_conntraction_hour
-        self.specialties = []
+        self.qualifications = []
 
 class ClassroomData:
     
@@ -105,4 +87,10 @@ class ScheduleByPriority:
         self.schedule = schedule # Matriz creada para almacenar el horario en donde las filas son los periodos y columnas son salones
         self.unassigned = unassigned # Listado de cursos si ser asignados
 
+class QualificationData:
+    
+    def __init__(self, dpi_teacher, course_id, is_owner) -> None:
+        self.dpi_teacher = dpi_teacher
+        self.course_id = course_id
+        self.is_owner = is_owner
     

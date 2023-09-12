@@ -17,13 +17,6 @@ class ScheduleManager:
         self.periods = []
         self.len_classrooms = 0
         self.len_periods = 0
-        
-    def build_classroom(classroom:Classroom):
-        return ClassroomData(
-            id = classroom.id_classroom,
-            capacity = classroom.capacity,
-            name = classroom.name,
-        )
     
     def parse_time(self, time_delta:timedelta):
         return time(
@@ -86,19 +79,19 @@ class ScheduleManager:
         for period in self.periods:
             self.schedule[period.index] = self.__sort_classroom__(self.get_by_period(period.index))
 
-    def sort_classrom_space(self, spaces):
-        return sorted(spaces, key = lambda space : space.classroom.capacity, reverse = True)
+    def sort_classrom_space(self, spaces, desc):
+        return sorted(spaces, key = lambda space : space.classroom.capacity, reverse = desc)
 
     def get_classroom_assinged(self, period):
-        sorted_classroom = self.sort_classrom_space(self.get_by_period(period))
+        sorted_classroom = self.sort_classrom_space(self.get_by_period(period), False)
         classrooms = []
         for space in sorted_classroom:
             if (space.schedule_assignment != None):
                 classrooms.append(space)
         return classrooms
 
-    def get_classroom_by_capacity_desc(self, db:Session, period:int):
-        sorted_classroom = self.sort_classrom_space(self.get_by_period(period))
+    def get_classroom_by_capacity(self, db:Session, period:int):
+        sorted_classroom = self.sort_classrom_space(self.get_by_period(period), False)
         classrooms = []
         for space in sorted_classroom:
             if (space.schedule_assignment == None):

@@ -7,6 +7,7 @@ from generators.GenerateByQualifications import GenerateByQualifications
 from generators.GenerateByAssignment import GenerateByAssignment
 from datetime import time
 from objects.objects import ScheduleByPriority
+from repositories import assignment, carrer, course, classroom, teacher
 
 def __create_schedule_manager__(generate_schedule:GenerateSchedule, db:Session):
     schedule_manager = ScheduleManager (
@@ -35,6 +36,7 @@ def __get_schedule_by_priorities__(schedule_manager:ScheduleManager, assignment_
         generate_by_qualifications = GenerateByQualifications(schedule_manager, assignment_manager, generate_by_hiring_schedule, db)
         generate_by_qualifications.generate_schedule()
         schedule_manager.sort_classrooms()
+    print(len(assignment_manager.get_unassigned()))
     return ScheduleByPriority (
         schedule = schedule_manager.schedule,
         unassigned = assignment_manager.get_unassigned()
@@ -53,4 +55,15 @@ def get_schedule(db:Session, generate_schedule:GenerateSchedule):
         "periods" : schedule_manager.periods,
         "time_information" : generate_schedule,
         "classrooms" : schedule_manager.get_by_period(0)
+    }
+
+
+def get_informative_data(db:Session):
+    year = 2023
+    return {
+        "assigments": assignment.get_assigned_by_year(year, db),
+        "carrers": len(carrer.get_all_carrers(db)),
+        "courses": len(course.get_all_courses(db)),
+        "classrooms": len(classroom.get_all_clasroom(db)),
+        "teachers": len(teacher.get_all_teachers(db)),
     }

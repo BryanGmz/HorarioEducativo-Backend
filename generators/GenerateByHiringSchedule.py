@@ -12,7 +12,7 @@ class GenerateByHiringSchedule:
         self.db = db
 
     def verify_space_by_capaciy(self, period, necessary_capacity:int):
-        spaces = self.schedule_manager.get_classroom_by_capacity_desc(self.db, period)
+        spaces = self.schedule_manager.get_classroom_by_capacity(self.db, period)
         if (len(spaces) > 0):
             for space in spaces:
                 if (space.classroom.capacity >= necessary_capacity):

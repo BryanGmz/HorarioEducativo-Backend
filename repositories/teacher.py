@@ -7,7 +7,7 @@ def get_teacher_by_dpi(db:Session, dpi):
         Teacher.dpi_teacher == dpi
         ).first()
 
-def get_all_teacher(db:Session):
+def get_all_teachers(db:Session):
     return db.query(Teacher).all()
 
 def get_teacher_by_contracting_hour(db: Session, start_time: time, end_time: time):

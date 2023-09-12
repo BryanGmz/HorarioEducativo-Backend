@@ -1,5 +1,5 @@
 from config.database import Base
-from sqlalchemy import Column, Integer, String, Time, ForeignKey, BigInteger, PrimaryKeyConstraint
+from sqlalchemy import Column, Integer, String, Time, ForeignKey, Boolean, BigInteger, PrimaryKeyConstraint
 from sqlalchemy.orm import relationship
 
 class Carrer(Base):
@@ -17,7 +17,7 @@ class Course(Base):
     carrer_id = Column(Integer, ForeignKey("carrer.id_carrer"))
     carrer = relationship("Carrer", back_populates="courses") 
     assignments = relationship("Assignment", back_populates="course")
-    requeriments = relationship("Requirement", back_populates="course")
+    qualifications = relationship("Qualification", back_populates="course")
     schedule_assignments = relationship("ScheduleAssignment", back_populates="course") 
 
 class Assignment(Base):
@@ -35,20 +35,13 @@ class Assignment(Base):
         PrimaryKeyConstraint("course_id", "carrer_id", "year", "semester", "section"),
     )
 
-class Area(Base):
-    __tablename__ = "area"
-    id_area = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String, nullable=False)
-    requeriments = relationship("Requirement", back_populates="area")
-    specialties = relationship("Specialty", back_populates="area")
-
 class Teacher(Base):
     __tablename__ = "teacher"
     dpi_teacher = Column(BigInteger, primary_key=True)
     name = Column(String, nullable=False)
     start_conntracting_hour = Column(Time, nullable=False)
     end_conntracting_hour = Column(Time, nullable=False)
-    specialties = relationship("Specialty", back_populates="teacher")
+    qualifications = relationship("Qualification", back_populates="teacher")
     schedule_assignments = relationship("ScheduleAssignment", back_populates="teacher") 
 
 class Classroom(Base):
@@ -58,26 +51,16 @@ class Classroom(Base):
     name = Column(String, nullable=False)
     schedule_assignments = relationship("ScheduleAssignment", back_populates="classroom") 
 
-class Requirement(Base):
-    __tablename__ = "requeriment"
-    area_id = Column(Integer, ForeignKey("area.id_area"), primary_key=True)
-    course_id = Column(Integer, ForeignKey("course.id_course"), primary_key=True)
-    area = relationship("Area", back_populates="requeriments")
-    course = relationship("Course", back_populates="requeriments")
-
-    __table_args__ = (
-        PrimaryKeyConstraint("area_id", "course_id"),
-    )
-
-class Specialty(Base):
-    __tablename__ = "specialty"
-    area_id = Column(Integer, ForeignKey("area.id_area"), primary_key=True)
+class Qualification(Base):
+    __tablename__ = "qualification"
     teacher_dpi = Column(BigInteger, ForeignKey("teacher.dpi_teacher"), primary_key=True)
-    area = relationship("Area", back_populates="specialties")
-    teacher = relationship("Teacher", back_populates="specialties")
+    course_id = Column(Integer, ForeignKey("course.id_course"), primary_key=True)
+    is_owner = Column(Boolean, nullable=False)
+    teacher = relationship("Teacher", back_populates="qualifications")
+    course = relationship("Course", back_populates="qualifications")
 
     __table_args__ = (
-        PrimaryKeyConstraint("area_id", "teacher_dpi"),
+        PrimaryKeyConstraint("teacher_dpi", "course_id"),
     )
 
 class ScheduleAssignment(Base):

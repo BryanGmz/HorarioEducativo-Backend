@@ -8,5 +8,8 @@ def get_classroom_by_id(db:Session, id):
 def get_all_clasroom(db:Session):
     return db.query(Classroom).order_by(desc(Classroom.capacity)).all()
 
+def get_all_clasroom_asc(db:Session):
+    return db.query(Classroom).order_by(Classroom.id_classroom).all()
+
 def get_first_classroom_by_capacity_desc(db:Session):
     return db.query(Classroom).order_by(desc(Classroom.capacity)).first()

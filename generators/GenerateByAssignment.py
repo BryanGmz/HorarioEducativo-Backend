@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from handlers.AssignmentManager import AssignmentManager
 from handlers.ScheduleManager import ScheduleManager
 from generators.GenerateByHiringSchedule import GenerateByHiringSchedule
-from repositories import teacher
+from repositories import teacher, qualification
 from objects.objects import AssignmentData
 
 class GenerateByAssignment:
@@ -29,7 +29,7 @@ class GenerateByAssignment:
 
     def get_qualificated_teacher(self, teachers, assigment:AssignmentData):
         for teacher in teachers:
-            if(self.assignment_manager.verify_contains_qualifications(teacher, assigment.course)):
+            if(qualification.get_qualification_by_composite_key(self.db, assigment.course.id, teacher.dpi_teacher) != None):
                 return teacher
         return None
 

@@ -21,7 +21,7 @@ class GenerateByQualifications:
         return filter_periods
 
     def generate_schedule(self):
-        teachers = teacher.get_all_teacher(self.db)
+        teachers = teacher.get_all_teachers(self.db)
         for teacher_db in teachers:
             courses = self.assignment_manager.filter_by_qualifications(teacher_db)
             if (len(courses) > 0):
@@ -39,8 +39,6 @@ class GenerateByQualifications:
                                     course.warning = "No asignado debido a que no se encontro salón con la capacidad necesaria."
                 else:
                     course.warning = "No asignado debido a que no hay profesores disponibles por el horario de contratación."
-               
-                    
         self.assignment_manager.add_warnings_unassigned("No asignado debido a que no hay profesores con las cualificaciones requeridas por el curso.")
                     
                         
