@@ -18,7 +18,8 @@ class CourseData:
 
 class AssignmentData:
         
-    def __init__(self, course:CourseData, carrer:CarrerData, year:int, section:str, assigned:int):
+    def __init__(self, id:int, course:CourseData, carrer:CarrerData, year:int, section:str, assigned:int):
+        self.id_assignment = id
         self.course:CourseData = course
         self.carrer:CarrerData = carrer
         self.year = year

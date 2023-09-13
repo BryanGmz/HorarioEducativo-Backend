@@ -1,11 +1,11 @@
 from config.database import Base
-from sqlalchemy import Column, Integer, String, Time, ForeignKey, Boolean, BigInteger, PrimaryKeyConstraint
+from sqlalchemy import Column, Integer, String, Time, ForeignKey, Boolean, BigInteger, PrimaryKeyConstraint, UniqueConstraint
 from sqlalchemy.orm import relationship
 
 class Carrer(Base):
     __tablename__ = "carrer"
     id_carrer = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String)
+    name = Column(String, nullable=False, unique=True)
     courses = relationship("Course", back_populates="carrer")
     assignments = relationship("Assignment", back_populates="carrer")
 
@@ -22,17 +22,18 @@ class Course(Base):
 
 class Assignment(Base):
     __tablename__ = "assignment"
-    course_id = Column(Integer, ForeignKey("course.id_course"), primary_key=True)
-    carrer_id = Column(Integer, ForeignKey("carrer.id_carrer"), primary_key=True)
-    year = Column(Integer, primary_key=True)
-    semester = Column(Integer, primary_key=True)
-    section = Column(String, primary_key=True)
+    id_assignment = Column(Integer, primary_key=True, autoincrement=True)
+    course_id = Column(Integer, ForeignKey("course.id_course"), nullable=False)
+    carrer_id = Column(Integer, ForeignKey("carrer.id_carrer"), nullable=False)
+    year = Column(Integer, nullable=False)
+    semester = Column(Integer, nullable=False)
+    section = Column(String, nullable=False)
     assigned = Column(Integer, nullable=False)
     course = relationship("Course", back_populates="assignments")
     carrer = relationship("Carrer", back_populates="assignments")
 
     __table_args__ = (
-        PrimaryKeyConstraint("course_id", "carrer_id", "year", "semester", "section"),
+        UniqueConstraint('course_id', 'carrer_id', 'year', 'semester', 'section', name='uq_assignment_fields'),
     )
 
 class Teacher(Base):

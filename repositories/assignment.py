@@ -10,3 +10,17 @@ def get_all_assignments(db:Session):
 
 def get_assigned_by_year(year, db:Session):
     return db.query(func.sum(Assignment.assigned)).filter_by(year=year).scalar()
+
+def create_assignment(assignment:Assignment, db:Session):
+    db.add(assignment)
+    db.commit()
+    db.refresh(assignment)
+    return assignment
+
+def delete_assignment(id:int, db:Session):
+    carrer = db.query(Assignment).filter(Assignment.id_assignment == id)
+    if not carrer.first():
+        return False
+    carrer.delete(synchronize_session=False)
+    db.commit()
+    return True

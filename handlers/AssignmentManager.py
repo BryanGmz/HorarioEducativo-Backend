@@ -18,6 +18,7 @@ class AssignmentManager:
                 name = assigment_db.carrer.name)
             self.assignments.append(
                 AssignmentData (
+                    id = assigment_db.id_assignment,
                     carrer = carrer_data, 
                     course = CourseData (
                         id = assigment_db.course_id,
