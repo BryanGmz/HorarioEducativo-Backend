@@ -54,14 +54,15 @@ class Classroom(Base):
 
 class Qualification(Base):
     __tablename__ = "qualification"
-    teacher_dpi = Column(BigInteger, ForeignKey("teacher.dpi_teacher"), primary_key=True)
-    course_id = Column(Integer, ForeignKey("course.id_course"), primary_key=True)
-    is_owner = Column(Boolean, nullable=False)
+    id_qualification = Column(Integer, primary_key=True, autoincrement=True)
+    teacher_dpi = Column(BigInteger, ForeignKey("teacher.dpi_teacher"))
+    course_id = Column(Integer, ForeignKey("course.id_course"))
+    is_owner = Column(Boolean, default=False)
     teacher = relationship("Teacher", back_populates="qualifications")
     course = relationship("Course", back_populates="qualifications")
 
     __table_args__ = (
-        PrimaryKeyConstraint("teacher_dpi", "course_id"),
+        UniqueConstraint('teacher_dpi', 'course_id', name='uq_qualification_fields'),
     )
 
 class ScheduleAssignment(Base):

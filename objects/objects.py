@@ -90,8 +90,14 @@ class ScheduleByPriority:
 
 class QualificationData:
     
-    def __init__(self, dpi_teacher, course_id, is_owner) -> None:
+    def __init__(self, dpi_teacher, course_id, is_owner):
         self.dpi_teacher = dpi_teacher
         self.course_id = course_id
         self.is_owner = is_owner
     
+class QualificationTeacherData:
+
+    def __init__(self, id, course_id, course_name):
+        self.id = id
+        self.course_id = course_id
+        self.name = course_name

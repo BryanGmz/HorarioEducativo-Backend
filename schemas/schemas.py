@@ -31,3 +31,8 @@ class CreateTeacher(BaseModel):
 class CreateClassroom(BaseModel):
     capacity: int
     name: str 
+
+class CreateQualification(BaseModel):
+    id_course: int
+    dpi_teacher: int
+    priority: int

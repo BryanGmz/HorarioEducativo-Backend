@@ -1,6 +1,6 @@
 from config.database import create_tables
 from fastapi import FastAPI
-from controllers import schedule_controller, assignment_controller, carrer_controller, course_controller, classroom_controller, teacher_controller
+from controllers import schedule_controller, assignment_controller, carrer_controller, course_controller, classroom_controller, teacher_controller, qualification_controller
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
@@ -13,6 +13,7 @@ app.include_router(carrer_controller.router)
 app.include_router(course_controller.router)
 app.include_router(classroom_controller.router)
 app.include_router(teacher_controller.router)
+app.include_router(qualification_controller.router)
 origin = ['*']
 
 app.add_middleware(

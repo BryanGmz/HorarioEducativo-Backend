@@ -16,4 +16,16 @@ def get_teacher_by_contracting_hour(db: Session, start_time: time, end_time: tim
         (end_time <= Teacher.end_conntracting_hour)
     ).all()
 
- 
+def create_teacher(teacher:Teacher, db:Session):
+    db.add(teacher)
+    db.commit()
+    db.refresh(teacher)
+    return teacher
+
+def delete_teacher(dpi:int, db:Session):
+    carrer = db.query(Teacher).filter(Teacher.dpi_teacher == dpi)
+    if not carrer.first():
+        return False
+    carrer.delete(synchronize_session=False)
+    db.commit()
+    return True
