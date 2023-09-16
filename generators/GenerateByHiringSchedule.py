@@ -34,7 +34,7 @@ class GenerateByHiringSchedule:
                                 space.schedule_assignment = self.assignment_manager.build_assignment(space, course, teacher_avaible, 'Por Horario de Contratación', 1)
                                 break
                             else:
-                                course.warning = "No asignado debido a que no se encontro salón con la capacidad necesaria."
-            else:
-                self.assignment_manager.add_warnings_unassigned("No asignado debido a que no hay profesores con las cualificaciones requeridas por el curso.")
-        self.assignment_manager.add_warnings_unassigned("No asignado debido a que no hay profesores disponibles por el horario de contratación.")
+                                course.warning = "Sin asignar debido a que no se encontro salón con la capacidad necesaria en los periodos disponibles."
+                    else:
+                        self.assignment_manager.add_warnings_unassigned("Sin asignar debido a que no hay profesores con las cualificaciones requeridas por el curso en los periodos disponibles.", False)
+        self.assignment_manager.add_warnings_unassigned("Sin asignar debido a la falta de disponibilidad de profesores en los periodos disponibles, a causa del horario de contratación.", True)

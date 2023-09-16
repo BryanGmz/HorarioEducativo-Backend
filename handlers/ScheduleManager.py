@@ -3,6 +3,7 @@ from math import ceil
 from objects.objects import Space, ClassroomData, Period
 from repositories.classroom import *
 from models.models import Classroom
+from repositories import teacher
 
 class ScheduleManager:
 
@@ -97,3 +98,25 @@ class ScheduleManager:
             if (space.schedule_assignment == None):
                 classrooms.append(space)
         return classrooms
+    
+    def get_classroom_avaibles(self, db:Session):
+        classrooms_aviables = 0
+        for period in self.get_periods():
+            classrooms_aviables += len(self.get_classroom_by_capacity(db, period.index))
+        return classrooms_aviables
+    
+    def __contains_teacher__(self, teachers, dpi):
+        for _teacher in teachers:
+            if (_teacher.dpi_teacher == dpi):
+                return True
+        return False
+
+    def get_teachers_with_courses(self, db:Session):
+        teachers_data = []
+        for period in self.get_periods():
+            sorted_classroom = self.sort_classrom_space(self.get_by_period(period.index), False)
+            for space in sorted_classroom:
+                if (space.schedule_assignment != None):        
+                    if (not space.schedule_assignment.teacher.dpi in teachers_data):
+                        teachers_data.append(space.schedule_assignment.teacher.dpi)
+        return len(teachers_data)

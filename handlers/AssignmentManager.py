@@ -29,11 +29,16 @@ class AssignmentManager:
                         ),
                     assigned = assigment_db.assigned,
                     section = assigment_db.section,
-                    year = assigment_db.year))
+                    year = assigment_db.year,))
 
-    def add_warnings_unassigned(self, warning):
+    def add_warnings_unassigned(self, warning, validate_null):
         for unassigned in self.get_unassigned():
-            unassigned.warning = warning
+            if (validate_null):
+                if(unassigned.warning == None):
+                    unassigned.warning = warning
+            else:
+                unassigned.warning = warning
+
 
     def get_unassigned(self):
         return list(filter(lambda assigment: not assigment.is_assigned, self.assignments))

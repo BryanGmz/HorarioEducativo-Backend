@@ -5,8 +5,7 @@ from handlers.AssignmentManager import AssignmentManager
 from generators.GenerateByHiringSchedule import GenerateByHiringSchedule 
 from generators.GenerateByQualifications import GenerateByQualifications
 from generators.GenerateByAssignment import GenerateByAssignment
-from datetime import time
-from objects.objects import ScheduleByPriority
+from objects.objects import ScheduleByPriority, Metric
 from repositories import assignment, carrer, course, classroom, teacher
 
 def __create_schedule_manager__(generate_schedule:GenerateSchedule, db:Session):
@@ -36,11 +35,42 @@ def __get_schedule_by_priorities__(schedule_manager:ScheduleManager, assignment_
         generate_by_qualifications = GenerateByQualifications(schedule_manager, assignment_manager, generate_by_hiring_schedule, db)
         generate_by_qualifications.generate_schedule()
         schedule_manager.sort_classrooms()
-    print(len(assignment_manager.get_unassigned()))
     return ScheduleByPriority (
         schedule = schedule_manager.schedule,
-        unassigned = assignment_manager.get_unassigned()
+        unassigned = assignment_manager.get_unassigned(),
+        metrics = [
+            __get_metric_assignment__(assignment_manager),
+            __get_metric_classroom__(db, schedule_manager),
+            __get_metric_teacher__(db, schedule_manager),
+        ]
     )
+
+def __get_metric_assignment__(assignment_manager:AssignmentManager):
+    avaible_value  = len(assignment_manager.get_unassigned())
+    real_value = len(assignment_manager.assignments)
+    return Metric (
+        avaible_value = avaible_value,
+        real_value = real_value,
+        name = "Cursos",
+    ) 
+
+def __get_metric_classroom__(db:Session, schedule_manager:ScheduleManager):
+    avaible_value  = schedule_manager.get_classroom_avaibles(db) 
+    real_value = len(schedule_manager.get_by_period(0)) * len(schedule_manager.periods)
+    return Metric (
+        avaible_value = avaible_value,
+        real_value = real_value,
+        name = "Salones",
+    ) 
+
+def __get_metric_teacher__(db:Session, schedule_manager:ScheduleManager):
+    real_value = len(teacher.get_all_teachers(db))
+    avaible_value = real_value - schedule_manager.get_teachers_with_courses(db)
+    return Metric (
+        avaible_value = avaible_value,
+        real_value = real_value,
+        name = "Profesores",
+    ) 
 
 def get_schedule(db:Session, generate_schedule:GenerateSchedule):
     schedule_manager = __create_schedule_manager__(generate_schedule, db)

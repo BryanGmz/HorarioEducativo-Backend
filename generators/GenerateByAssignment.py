@@ -35,8 +35,8 @@ class GenerateByAssignment:
 
     def generate_schedule(self):
         unassigneds = self.assignment_manager.get_unassigned()
+        periods = self.schedule_manager.get_periods()
         for unassigned in unassigneds:
-            periods = self.schedule_manager.get_periods()
             for period in periods:
                 if (not unassigned.is_assigned):
                     classroom = self.generate_by_hiring_schedule.verify_space_by_capaciy(period.index, unassigned.assigned)
@@ -48,8 +48,8 @@ class GenerateByAssignment:
                                 unassigned.is_assigned = True
                                 classroom.schedule_assignment = self.assignment_manager.build_assignment(classroom, unassigned, qualificated_teacher, 'Por Asignación de Cursos y Espacios', 3)
                             else:
-                                unassigned.warning = "No asignado debido a que no hay profesores con las cualificaciones requeridas por el curso."
+                                unassigned.warning = "Sin asignar debido a que no hay profesores con las cualificaciones requeridas por el curso en los periodos disponibles."
                         else: 
-                            unassigned.warning = "No asignado debido a que no hay profesores disponibles por el horario de contratación."
+                            unassigned.warning = "Sin asignar debido a la falta de disponibilidad de profesores en los periodos disponibles, a causa del horario de contratación."
                     else: 
-                        unassigned.warning = "No asignado debido a que no se encontro salón con la capacidad necesaria."
+                        unassigned.warning = "Sin asignar debido a que no se encontro salón con la capacidad necesaria en los periodos disponibles."

@@ -84,9 +84,10 @@ class Period:
 
 class ScheduleByPriority:
 
-    def __init__(self, schedule, unassigned):
+    def __init__(self, schedule, unassigned, metrics):
         self.schedule = schedule # Matriz creada para almacenar el horario en donde las filas son los periodos y columnas son salones
         self.unassigned = unassigned # Listado de cursos si ser asignados
+        self.metrics = metrics 
 
 class QualificationData:
     
@@ -101,3 +102,11 @@ class QualificationTeacherData:
         self.id = id
         self.course_id = course_id
         self.name = course_name
+
+class Metric:
+    
+    def __init__(self, name, avaible_value, real_value):
+        self.name = name
+        self.avaible_value = avaible_value
+        self.real_value = real_value
+        self.percentage = round((100 - ((avaible_value/real_value) * 100)), 2)
