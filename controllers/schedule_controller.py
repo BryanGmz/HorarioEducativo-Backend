@@ -13,7 +13,7 @@ router = APIRouter (
 )
 
 @router.get('/informative-data/',status_code=status.HTTP_200_OK)
-def hola(db:Session = Depends(get_db)):
+def informative_data(db:Session = Depends(get_db)):
     return schedule_service.get_informative_data(db)
 
 @router.post('/',status_code=status.HTTP_200_OK)

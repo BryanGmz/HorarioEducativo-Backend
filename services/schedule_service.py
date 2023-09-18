@@ -60,7 +60,7 @@ def __get_metric_classroom__(db:Session, schedule_manager:ScheduleManager):
     return Metric (
         avaible_value = avaible_value,
         real_value = real_value,
-        name = "Salones",
+        name = "Salones (Ocupaciones)",
     ) 
 
 def __get_metric_teacher__(db:Session, schedule_manager:ScheduleManager):
